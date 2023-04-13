@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 
@@ -10,6 +11,11 @@ class Product(BaseModel):
 
 
 app = FastAPI()
+
+
+@app.get("/")
+def display_products():
+    return FileResponse("index.html")
 
 
 @app.post("/products/")
