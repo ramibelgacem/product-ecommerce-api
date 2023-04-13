@@ -12,7 +12,7 @@ class HtmlORM:
         table = soup.find("table", {"id": "productsInfo"})
         table.append(
             BeautifulSoup(
-                f"<tr><td>{product.id}</td><td>{product.name}</td>"
+                f"<tr id='{product.id}'><td>{product.id}</td><td>{product.name}</td>"
                 f"<td>{product.description}</td><td>{product.price}</td></tr>",
                 "html.parser",
             )
