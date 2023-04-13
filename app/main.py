@@ -1,9 +1,10 @@
 import os
 
-from fastapi import FastAPI, status
+from fastapi import FastAPI, HTTPException, status
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
+from exception import ProductNotFound
 from model import HtmlORM
 
 base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -29,3 +30,14 @@ def display_products():
 def add_product(product: Product):
     db.add(product)
     return product
+
+
+@app.delete("/products/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
+def remove_product(product_id: int):
+    try:
+        db.remove(product_id)
+    except ProductNotFound:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Product with id={product_id} does not exist",
+        )
