@@ -16,8 +16,7 @@ class HtmlORM:
             f_output.write(soup.prettify("utf-8"))
 
     def add(self, product):
-        html = open(self.filename)
-        soup = BeautifulSoup(html, "html.parser")
+        soup = self.get_content()
 
         table = soup.find("table", {"id": "productsInfo"})
         table.append(
@@ -28,8 +27,7 @@ class HtmlORM:
             )
         )
 
-        with open(self.filename, "wb") as f_output:
-            f_output.write(soup.prettify("utf-8"))
+        self._commit(soup)
 
     def remove(self, product_id):
         soup = self.get_content()
