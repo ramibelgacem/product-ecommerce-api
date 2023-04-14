@@ -32,6 +32,21 @@ def add_product(product: Product):
     return product
 
 
+@app.put(
+    "/products/{product_id}",
+    status_code=status.HTTP_202_ACCEPTED,
+)
+def update_product(product_id: int, product: Product):
+    try:
+        db.update(product_id, product)
+    except ProductNotFound:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Product with id={product_id} does not exist",
+        )
+    return product
+
+
 @app.delete("/products/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
 def remove_product(product_id: int):
     try:

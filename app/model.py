@@ -21,11 +21,28 @@ class HtmlORM:
         table = soup.find("table", {"id": "productsInfo"})
         table.append(
             BeautifulSoup(
-                f"<tr id='{product.id}'><td>{product.id}</td><td>{product.name}</td>"
-                f"<td>{product.description}</td><td>{product.price}</td></tr>",
+                f"<tr id='{product.id}'><td id='id'>{product.id}</td><td id='name'>{product.name}</td>"
+                f"<td id='description'>{product.description}</td><td id='price'>{product.price}</td></tr>",
                 "html.parser",
             )
         )
+
+        self._commit(soup)
+
+    def update(self, product_id, product):
+        if not isinstance(product, dict):
+            product = dict(product)
+
+        soup = self.get_content()
+
+        product_tag = soup.find("tr", {"id": product_id})
+        if product_tag is None:
+            raise ProductNotFound()
+
+        for key in product.keys():
+            product_tag.find("td", {"id": key}).string.replace_with(str(product[key]))
+            if "id" == key:
+                product_tag[key] = product[key]
 
         self._commit(soup)
 
