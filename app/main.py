@@ -5,10 +5,10 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 from exception import ProductNotFound
-from model import HtmlORM
+from model import HtmlTableORM
 
 base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-db = HtmlORM(os.path.join(base, "index.html"))
+db = HtmlTableORM(os.path.join(base, "index.html"))
 
 
 class Product(BaseModel):

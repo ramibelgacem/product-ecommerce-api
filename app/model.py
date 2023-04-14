@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from exception import ProductNotFound
 
 
-class HtmlORM:
+class HtmlTableORM:
     def __init__(self, filename):
         self.filename = filename
 
