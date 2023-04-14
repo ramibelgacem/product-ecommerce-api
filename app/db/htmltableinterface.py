@@ -3,7 +3,12 @@ from bs4 import BeautifulSoup
 from exception import ProductNotFound
 
 
-class HtmlTableORM:
+class HtmlTableInterface:
+    """
+    It is a class that serves as an interface between the application program
+    and the html file that acts as a database.
+    """
+
     def __init__(self, filename):
         self.filename = filename
 

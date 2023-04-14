@@ -5,14 +5,14 @@ from fastapi.responses import FileResponse
 
 from app import schemas
 from app.exception import ProductNotFound
-from app.db.orm import HtmlTableORM
+from app.db.htmltableinterface import HtmlTableInterface
 
 
 base = os.path.dirname(
     os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 )
 db_file = os.path.join(base, "templates/index.html")
-db = HtmlTableORM(db_file)
+db = HtmlTableInterface(db_file)
 
 router = APIRouter()
 
