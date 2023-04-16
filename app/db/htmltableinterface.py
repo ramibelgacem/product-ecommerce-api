@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 
-from exception import ProductNotFound
+from app.exception import ProductNotFound
 
 
 class HtmlTableInterface:
