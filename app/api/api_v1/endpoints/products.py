@@ -1,6 +1,6 @@
 import os
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import FileResponse
 
 from app import schemas
@@ -8,22 +8,25 @@ from app.exception import ProductNotFound
 from app.db.htmltableinterface import HtmlTableInterface
 
 
-base = os.path.dirname(
-    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-)
-db_file = os.path.join(base, "templates/index.html")
-db = HtmlTableInterface(db_file)
+def get_db():
+    base = os.path.dirname(
+        os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    )
+    db_file = os.path.join(base, "templates/index.html")
+    db = HtmlTableInterface(db_file)
+    return db
+
 
 router = APIRouter()
 
 
 @router.get("/")
-def display_products():
-    return FileResponse(db_file)
+def display_products(db: HtmlTableInterface = Depends(get_db)):
+    return FileResponse(db.filename)
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-def add_product(product: schemas.Product):
+def add_product(product: schemas.Product, db: HtmlTableInterface = Depends(get_db)):
     db.add(product)
     return product
 
@@ -32,7 +35,9 @@ def add_product(product: schemas.Product):
     "/{product_id}",
     status_code=status.HTTP_202_ACCEPTED,
 )
-def update_product(product_id: int, product: schemas.Product):
+def update_product(
+    product_id: int, product: schemas.Product, db: HtmlTableInterface = Depends(get_db)
+):
     try:
         db.update(product_id, product)
     except ProductNotFound:
@@ -44,7 +49,7 @@ def update_product(product_id: int, product: schemas.Product):
 
 
 @router.delete("/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
-def remove_product(product_id: int):
+def remove_product(product_id: int, db: HtmlTableInterface = Depends(get_db)):
     try:
         db.remove(product_id)
     except ProductNotFound:
