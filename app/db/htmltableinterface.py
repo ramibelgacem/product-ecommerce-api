@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 
+from app import schemas
 from app.exception import ProductNotFound
 
 
@@ -9,18 +10,39 @@ class HtmlTableInterface:
     and the html file that acts as a database.
     """
 
-    def __init__(self, filename):
+    def __init__(self, filename: str):
+        """initialise a new database interface with html file path
+
+        :param filename: database html file
+        :type filename: str
+        """
         self.filename = filename
 
     def get_content(self):
+        """Get the content of the database html file
+        using BeautifulSoup library
+
+        :return: database html file content
+        :rtype: BeautifulSoup
+        """
         html = open(self.filename)
         return BeautifulSoup(html, "html.parser")
 
-    def _commit(self, soup):
+    def _commit(self, soup: BeautifulSoup):
+        """Validate new changement in the database html file
+
+        :param soup: beautifulSoup object that holds the new changement
+        :type soup: BeautifulSoup
+        """
         with open(self.filename, "wb") as f_output:
             f_output.write(soup.prettify("utf-8"))
 
-    def add(self, product):
+    def add(self, product: schemas.ProductIn):
+        """Create a new product
+
+        :param product: product object holds informations
+        :type product: ProductIn
+        """
         soup = self.get_content()
 
         table = soup.find("table", {"id": "productsInfo"})
@@ -34,7 +56,15 @@ class HtmlTableInterface:
 
         self._commit(soup)
 
-    def update(self, product_id, product):
+    def update(self, product_id: int, product: schemas.Product):
+        """Update a product
+
+        :param product_id: id of the product to be updated
+        :type product_id: int
+        :param product: product object holds informations to update
+        :type product: schemas.Product
+        :raises ProductNotFound: if the product does not exist
+        """
         if not isinstance(product, dict):
             product = dict(product)
 
@@ -49,7 +79,13 @@ class HtmlTableInterface:
 
         self._commit(soup)
 
-    def remove(self, product_id):
+    def remove(self, product_id: int):
+        """Delete a product
+
+        :param product_id: id of the product to be deleted
+        :type product_id: int
+        :raises ProductNotFound: if the product does not exist
+        """
         soup = self.get_content()
 
         product_tag = soup.find("tr", {"id": product_id})
@@ -60,6 +96,7 @@ class HtmlTableInterface:
         self._commit(soup)
 
     def clear(self):
+        """Remove all product from the database html files"""
         soup = self.get_content()
 
         lines = soup.findAll("tr", id=True)

@@ -20,13 +20,29 @@ def get_db():
 router = APIRouter()
 
 
-@router.get("/")
+@router.get(
+    "/",
+    summary="Read html file content",
+)
 def display_products(db: HtmlTableInterface = Depends(get_db)):
     return FileResponse(db.filename)
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/",
+    status_code=status.HTTP_201_CREATED,
+    summary="Create a product",
+    response_description="The created product",
+)
 def add_product(product: schemas.ProductIn, db: HtmlTableInterface = Depends(get_db)):
+    """
+    Create a product with all the information:
+
+    - **name**: each product must have a name
+    - **description**: a long description of the product
+    - **price**: price of the product, it is required
+    - **id**: each product must have an id
+    """
     db.add(product)
     return product
 
@@ -34,6 +50,7 @@ def add_product(product: schemas.ProductIn, db: HtmlTableInterface = Depends(get
 @router.put(
     "/{product_id}",
     status_code=status.HTTP_202_ACCEPTED,
+    summary="Update a product",
 )
 def update_product(
     product_id: str,
@@ -50,7 +67,11 @@ def update_product(
     return product
 
 
-@router.delete("/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{product_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Remove a product",
+)
 def remove_product(product_id: str, db: HtmlTableInterface = Depends(get_db)):
     try:
         db.remove(product_id)
