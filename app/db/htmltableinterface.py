@@ -58,3 +58,12 @@ class HtmlTableInterface:
         product_tag.decompose()
 
         self._commit(soup)
+
+    def clear(self):
+        soup = self.get_content()
+
+        lines = soup.findAll("tr", id=True)
+        for line in lines:
+            line.decompose()
+
+        self._commit(soup)
