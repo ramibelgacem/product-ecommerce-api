@@ -47,7 +47,6 @@ def test_update_product():
     response = client.put(
         "/api/v1/products/1",
         json={
-            "id": 1,
             "name": "Personal Computer",
             "description": "PC gamer",
             "price": 1599,

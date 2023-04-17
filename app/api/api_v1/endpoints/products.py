@@ -26,7 +26,7 @@ def display_products(db: HtmlTableInterface = Depends(get_db)):
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-def add_product(product: schemas.Product, db: HtmlTableInterface = Depends(get_db)):
+def add_product(product: schemas.ProductIn, db: HtmlTableInterface = Depends(get_db)):
     db.add(product)
     return product
 
@@ -36,7 +36,9 @@ def add_product(product: schemas.Product, db: HtmlTableInterface = Depends(get_d
     status_code=status.HTTP_202_ACCEPTED,
 )
 def update_product(
-    product_id: int, product: schemas.Product, db: HtmlTableInterface = Depends(get_db)
+    product_id: str,
+    product: schemas.Product,
+    db: HtmlTableInterface = Depends(get_db),
 ):
     try:
         db.update(product_id, product)
@@ -49,7 +51,7 @@ def update_product(
 
 
 @router.delete("/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
-def remove_product(product_id: int, db: HtmlTableInterface = Depends(get_db)):
+def remove_product(product_id: str, db: HtmlTableInterface = Depends(get_db)):
     try:
         db.remove(product_id)
     except ProductNotFound:

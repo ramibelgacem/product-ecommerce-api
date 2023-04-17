@@ -46,8 +46,6 @@ class HtmlTableInterface:
 
         for key in product.keys():
             product_tag.find("td", {"id": key}).string.replace_with(str(product[key]))
-            if "id" == key:
-                product_tag[key] = product[key]
 
         self._commit(soup)
 
